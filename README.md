@@ -48,6 +48,12 @@ This architecture separates telemetry collection from monitoring presentation, a
 Live monitoring dashboard displaying telemetry, node status, and polling latency in real time.
 
 ![Monitoring Dashboard](screenshots/dashboard.png)
+### High Load Monitoring Example
+
+![High Load Screenshot](docs/monitor_high_load.png)
+
+This screenshot shows the monitoring platform observing the Raspberry Pi while running a CPU-intensive workload.  
+Notice the elevated CPU usage and temperature compared to the baseline view, demonstrating real-time system response under load.
 
 ## Monitoring Pipeline
 
