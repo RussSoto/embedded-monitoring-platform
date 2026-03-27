@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<!-- Page metadata, auto refresh & shared dahboard stylesheet --> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="7">
+    <title>Embedded Monitoring Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+
+
+<body>
+    <!-- Main dashboard wrapper-->    
+    <div class="page-shell">
+        
+        <!-- Hero section with dashboard title, live node statu, and active alerts-->
+        <header class="hero">           
+            <div>                              
+                <p class="eyebrow">Embedded Monitoring Platform</p>
+                <h1>System Dashboard</h1>
+                <p class="hero-subtitle">
+                    Real-time view of monitored node health, telemetry, and connectivity.
+                </p>
+            </div>
+
+            <div class ="hero-status-block">
+                <div class="status-pill {{ status_class }}">
+                    <span class="status-dot"></span>
+                    <span>{{ status_text }}</span>
+                </div>
+
+                <!-- Alert list rendered from backend threshold/state check-->
+                <div class="hero-alerts">
+                    {% if alerts %}
+                        {% for alert in alerts %}
+                            <div class="alert-item {{ alert.level }}">
+                                <strong>{{ alert.level|upper }}</strong> - {{ alert.message }}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert-item normal">
+                            <strong>NORMAL</strong> - System normal
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <!-- Top summary cards for node identity and later poll state -->
+        <section class="card-grid card-grid-top">       
+            <article class="card highlight-card">
+                <p class="card-label">Monitoring Node</p>
+                <h2>{{ monitor_node }}</h2>
+                <p class="muted-text">Flask dashboard + polling service</p>
+            </article>
+
+            <article class="card highlight-card">
+                <p class="card-label">Monitored Node</p>
+                <h2>{{ monitored_node }}</h2>
+                <p class="muted-text">Live telemetry target</p>
+            </article>
+
+            <article class="card highlight-card">
+                <p class="card-label">Poll Latency</p>
+                <h2>{{ latency }} ms</h2>
+                <p class="muted-text">Latest request round-trip</p>
+            </article>
+
+            <article class="card highlight-card">
+                <p class="card-label">Last Successful Poll</p>
+                <h2 class="smaller-heading">{{ last_poll }}</h2>
+                <p class="muted-text">Most recent confirmed update</p>
+            </article>
+        </section>
+
+        <section class="dashboard-main">
+            <!-- Core system telemetry returned by the monitored node -->
+            <article class="card section-card">                
+                <div class="section-header">
+                    <p class="section-kicker">System Telemetry</p>
+                    <h3>Core Metrics</h3>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <p class="stat-label">Uptime</p>
+                        <p class="stat-value">{{ uptime }}</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <p class="stat-label">CPU Load (1 min)</p>
+                        <p class="stat-value">{{ cpu_load }}</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <p class="stat-label">CPU Temp (C)</p>
+                        <p class="stat-value">{{ cpu_temp_c }}°C</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <p class="stat-label">CPU Temp (F)</p>
+                        <p class="stat-value">{{ cpu_temp_f }}°F</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Expanded V2 telemetry beyond the original dashboard scope-->
+            <article class="card section-card">
+                <div class="section-header">
+                    <p class="section-kicker">V2 Expansion</p>
+                    <h3>Additional Telemetry</h3>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <p class="stat-label">Memory Used</p>
+                        <p class="stat-value">{{ memory_used_percent }}</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <p class="stat-label">CPU Usage</p>
+                        <p class="stat-value">{{ cpu_usage_percent }}</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <p class="stat-label">Disk Used</p>
+                        <p class="stat-value">{{ disk_used_percent }}</p>
+                    </div>
+
+                    <div class="stat-box">
+                        <p class="stat-label">Network I/O</p>
+                        <p class="stat-value">In: &darr;{{network_rx_kBps}} Out: &uarr;{{network_tx_kBps}}</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- Lower dashboard section for vision healthand diagnostics -->
+        <section class="dashboard-bottom">            
+            <article class="card section-card">
+                <div class="section-header">
+                    <p class="section-kicker">Vision Pipeline Health</p>
+                    <h3>Status Details</h3>
+                </div>
+
+                <div class="detail-list">
+                    <div class="detail-row">
+                        <span class="detail-key">Vision Process</span>
+                        <span class="detail-value"> {{ process_status }} ( {{vision_runtime_seconds}} )</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Camera Feed</span>
+                        <span class="detail-value">{{ camera_status }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Frame Rate</span>
+                        <span class="detail-value">{{ frame_rate }} FPS</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card section-card">
+                <div class="section-header">
+                    <p class="section-kicker">Diagnostics</p>
+                    <h3>Last Error</h3>
+                </div>
+
+                <!-- Most recent backend polling / communication error -->
+                <div class="error-panel">
+                    {{ last_error if last_error else "No recent errors" }}
+                </div>
+
+                <!-- Direct link to the raw JSON API for quick inspection -->
+                <a class="api-link" href="{{ url_for('api_status') }}" target="_blank">
+                    View raw JSON status
+                </a>
+            </article>
+        </section>
+    </div>
+</body>
+</html>
+

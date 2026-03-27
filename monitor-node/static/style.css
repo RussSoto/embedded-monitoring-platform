@@ -1,0 +1,308 @@
+/* ===== Global Reset ===== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* ===== Base Page Styling ===== */
+body { 
+    font-family: Arial, sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(70, 90, 180, 0.22), transparent 28%),
+        radial-gradient(circle at top right, rgba(0, 190, 255, 0.14), transparent 24%),
+        linear-gradient(180deg, #08111f 0%, #0d1726 45%, #101826 100%);
+    color: #e8eefc;
+    min-height: 100vh;
+}
+
+
+/* ===== Layout Wrapper ===== */
+/* Centers content and constrains max width for readability */
+.page-shell {
+    width: min(1200px, 92%);
+    margin: 0 auto;
+    padding: 32px 0 48px;
+}
+
+
+/* ===== Hero Section ===== */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    color: #7ea7ff;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 10px;
+}
+
+.hero h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.hero-subtitle {
+    color: #9fb0ca;
+    max-width: 700px;
+    line-height: 1.6;
+}
+
+
+/* ===== Status Indicator ===== */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.status-online {
+    color: #3ddc97;
+    background: rgba(61, 220, 151, 0.1);
+}
+
+.status-offline {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+}
+
+
+/* ===== Dashboard Grid Layout ===== */
+.card-grid {
+    display: grid;
+    gap: 18px;
+}
+
+.card-grid-top {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 22px;
+}
+
+.dashboard-main {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 22px;
+    margin-bottom: 22px;
+}
+
+.dashboard-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+
+/* ===== Card Styling ===== */
+.card {
+    background: linear-gradient(180deg, rgba(21, 31, 48, 0.92), rgba(13, 22, 36, 0.96));
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 22px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
+}
+
+.highlight-card {
+    padding: 22px;
+    min-height: 132px;
+}
+
+.section-card {
+    padding: 24px;
+}
+
+
+/* ===== Shared Text Styles ===== */
+.card-label,
+.section-kicker,
+.stat-label,
+.detail-key,
+.muted-text {
+    color: #8da1c2;
+}
+
+.card-label,
+.section-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    margin-bottom: 10px;
+}
+
+.highlight-card h2 {
+    font-size: 1.55rem;
+    margin-bottom: 10px;
+}
+
+/* Smaller heading variant for longer values (e.g., URLs) */
+.smaller-heading {
+    font-size: 1.05rem !important;
+    line-height: 1.45;
+}
+
+.muted-text {
+    line-height: 1.5;
+}
+
+
+/* ===== Section Headers ===== */
+/* Wrapper spacing for section titles */
+.section-header {
+    margin-bottom: 18px;
+}
+
+.section-header h3 {
+    font-size: 1.4rem;
+}
+
+/* ===== Stats Grid (System Metrics) ===== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.stat-box {
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-label {
+    font-size: 0.86rem;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ===== Detail List (System Info Panel) ===== */
+.detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-value {
+    text-align: right;
+    font-weight: 600;
+}
+
+/* ===== Error Display ===== */
+.error-panel {
+    min-height: 110px;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(255, 107, 107, 0.08);
+    border: 1px solid rgba(255, 107, 107, 0.14);
+    color: #ffd3d3;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    word-break: break-word;
+}
+
+/* ===== API Link ===== */
+.api-link {
+    display: inline-block;
+    color: #7ea7ff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.api-link:hover {
+    text-decoration: underline;
+}
+
+/* ===== Alerts ===== */
+.alert-item {
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 8px;
+}
+
+.alert-item.normal {
+    background: rgba(34, 197, 94, 0.2);
+}
+
+.alert-item.critical {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.hero-status-block{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap:8px;
+}
+
+.hero-alerts{
+    display: flex;
+    align-items: flex-end;
+    gap:6px;
+}
+
+
+/* ===== Responsive Layout (based on resolution) ===== */
+@media (max-width: 1024px) {
+    .card-grid-top {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-main,
+    .dashboard-bottom {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ===== Responsive Layout (Mobile) ===== */
+@media (max-width: 640px) {
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-grid-top,
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 1.9rem;
+    }
+}

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<!-- Page metadata, auto refresh, & inline styling for log dashboard --> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="7">
+    <title>Recent Events </title>
+    
+    <style>
+        /*==============================
+          Global Layout / Base Styles
+        ==============================*/
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #e8ecf8;
+            background:
+                radial-gradient(circle at top, #172033 0%, #0a0f1f 48%, #000000 100%);
+            padding: 36px 20px 56px;
+        }
+
+        .page-shell {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        /*==============================
+                  Header Section
+        ==============================*/
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-title {
+            margin: 0 0 10px 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: #f4f7ff;
+        }
+
+        .page-subtitle {
+            margin: 0;
+            font-size: 1.05rem;
+            color: rgba(214, 221, 240, 0.72);
+        }
+        
+        /*==============================
+              Logs List / Cards
+        ==============================*/
+        .logs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .log-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background:
+                linear-gradient(180deg, rgba(20, 29, 50, 0.90) 0%, rgba(10, 15, 30, 0.88) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 10px 28px rgba(0, 0, 0, 0.32),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            padding: 18px 22px 16px 22px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Left accent bar based on severity level */
+        .log-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            border-radius: 16px 0 0 16px;
+        }
+
+        .log-card.info::before {
+            background: linear-gradient(180deg, #4f8cff 0%, #2563eb 100%);
+        }
+
+        .log-card.warning::before {
+            background: linear-gradient(180deg, #ffcc66 0%, #f59e0b 100%);
+        }
+
+        .log-card.critical::before {
+            background: linear-gradient(180deg, #ff5f73 0%, #ef4444 100%);
+        }
+
+        /*==============================
+                Log Card Content
+        ==============================*/
+        .log-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .timestamp {
+            font-size: 0.95rem;
+            color: rgba(224, 230, 245, 0.82);
+            letter-spacing: 0.01em;
+        }
+
+        .node-label {
+            white-space: nowrap;
+            font-size: 0.95rem;
+            color: rgba(224, 230, 245, 0.82);
+        }
+
+        .node-label .node-dot {
+            margin-left: 8px;
+            color: rgba(196, 204, 224, 0.55);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .event-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .event-dot {
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+
+        .event-name {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        /* Severity based text coloring */
+        .log-card.info .event-dot,
+        .log-card.info .event-name {
+            color: #6ea8ff;
+        }
+
+        .log-card.warning .event-dot,
+        .log-card.warning .event-name {
+            color: #ffc857;
+        }
+
+        .log-card.critical .event-dot,
+        .log-card.critical .event-name {
+            color: #ff5f73;
+        }
+
+        .message {
+            margin: 0 0 14px 0;
+            color: rgba(231, 236, 248, 0.86);
+            font-size: 0.98rem;
+            line-height: 1.45;
+        }
+
+        /* Metric snapshot attached to each event */
+        .metrics {
+            font-size: 0.94rem;
+            color: rgba(206, 214, 233, 0.78);
+        }
+
+        .metrics span {
+            display: inline-block;
+        }
+
+        .metrics .divider {
+            margin: 0 10px;
+            color: rgba(255, 255, 255, 0.18);
+        }
+
+        /*==============================
+                  Empty state
+        ==============================*/
+        .empty-state {
+            padding: 26px 22px;
+            border-radius: 16px;
+            background: rgba(15, 22, 38, 0.78);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(220, 227, 244, 0.72);
+        }
+
+        /*==============================
+        Responsive Adjustments ( Resolution)
+        ==============================*/
+        @media (max-width: 720px) {
+            body {
+                padding: 24px 14px 40px;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .log-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .node-label {
+                font-size: 0.9rem;
+            }
+
+            .log-card {
+                padding: 16px 16px 14px 16px;
+            }
+
+            .metrics .divider {
+                margin: 0 7px;
+            }
+        }
+    </style>
+</head>
+
+
+
+
+
+<body>
+    <div class="page-shell">
+        <!-- Page header -->
+        <div class="page-header">
+            <h1 class= "page-title">Recent Events</h1>
+            <p class="page-subtitle">Last 50 system events </p>
+        </div>
+        
+        <!-- Log list rendered from backend log file -->
+        {% if logs %}
+            <div class ="logs-list">
+                {% for log in logs  %}
+                    {% set severity= log.get("severity","info")%}
+                    {% set metrics= log.get("metrics",{}) %}
+                    {% set raw_event= log.get("event","unknown_event")%}
+                    {% set display_event= raw_event.replace("_"," ")%}
+            
+                    <div class="log-card {{ severity }}">
+                        <div class="log-top">
+                            <div class="timestamp">{{ log.get("timestamp", "N/A") }}</div>
+                    
+                            <!-- Node identifier for this event -->
+                            <div class="node-label">
+                                {{ log.get("node", "N/A") }}<span class="node-dot">&bull;</span>
+                            </div>
+                        </div>
+            
+                        <!-- Event name / type -->
+                        <div class="event-row">
+                            <span class="event-dot">&#9679;</span>
+                            <h2 class="event-name">{{ display_event }}</h2>
+                        </div>
+                
+                        <!-- Event message / context -->
+                        <p class="message">
+                            {{log.get("message", "No message provided") }}
+                        </p>
+                
+                        <!-- Optional metric snapshot captured at event time -->
+                        {% if metrics %}
+                            <div class="metrics">
+                                <span>CPU: {{ metrics.get("cpu_usage_percent", "N/A") }}%</span>
+                                <span class="divider">|</span>
+                                <span>Memory: {{ metrics.get("memory_used_percent", "N/A") }}%</span>
+                                <span class="divider">|</span>
+                                <span>Disk: {{ metrics.get("disk_used_percent", "N/A") }}%</span>
+                            </div>
+                        {% endif %}
+                    </div>
+             {% endfor %}
+             </div>
+            
+        {% else %}
+            <!-- No logs yet -->
+            <div class="empty-state">
+                No events logged yet.
+            </div>
+        {% endif %}
+    </div>
+            
+    <!-- Preserve scroll position between auto refreshes -->
+    <script>
+        if (localStorage.getItem("scrollPos")) {
+        window.scrollTo(0,localStorage.getItem("scrollPos"));
+        }
+        
+        window.addEventListener("beforeunload",()=>{
+            localStorage.setItem("scrollPos",window.scrollY);
+        });
+    </script>
+</body>
+</html>
